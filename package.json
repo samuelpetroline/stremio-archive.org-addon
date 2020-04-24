@@ -3,13 +3,16 @@
 	"version": "0.0.1",
 	"description": "Public domain movies available on Archive.org",
 	"scripts": {
-		"start": "node index.js"
+		"start": "node index.js",
+		"launch": "npm start -- --install"
 	},
 	"dependencies": {
-		"stremio-addon-sdk": "1.1.x",
-		"axios": "0.19.2"
+		"axios": "0.19.2",
+		"lucene-query-generator": "^0.2.0",
+		"stremio-addon-sdk": "1.1.x"
 	},
 	"devDependencies": {
+		"dotenv": "^8.2.0",
 		"nodemon": "2.0.3"
 	}
 }
