@@ -8,12 +8,13 @@ const useCases = require('./use-cases')
 const handlers = require('./handlers')
 
 const { env } = require('./config')
-const { queryBuilder } = require('./commons')
+const { queryBuilder, transformModel } = require('./commons')
 
 const {
     searchCatalog,
     getMeta
 } = handlers({
+    ...transformModel({ env }),
     ...useCases({
         httpClient: axios,
         queryBuilder,
