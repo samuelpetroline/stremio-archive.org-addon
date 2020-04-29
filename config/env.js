@@ -7,6 +7,7 @@ const {
 } = process.env
 
 const config = {
+  addonContentIdPrefix: 'archorg.addon:',
   url: {
     search: SEARCH_URL,
     metadata: METADATA_URL,

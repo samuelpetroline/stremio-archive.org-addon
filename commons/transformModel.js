@@ -5,7 +5,7 @@ module.exports = dependencies => {
 
     const toCatalog = (item) => {
         return {
-            id: item.identifier,
+            id: `${env.addonContentIdPrefix}${item.identifier}`,
             type: 'movie',
             name: item.title,
             poster: `${env.url.image}/${item.identifier}`,
@@ -14,7 +14,15 @@ module.exports = dependencies => {
     }
 
     const toMeta = (item) => {
-
+        return {
+            id: item.identifier,
+            type: 'movie',
+            name: item.title,
+            description: item.description,
+            language: item.language,
+            genres: item.genre ? item.genre.split(',') : undefined,
+            director: item.director ? item.director.split(',') : undefined
+        }
     }
 
     return {

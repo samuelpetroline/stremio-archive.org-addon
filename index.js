@@ -12,8 +12,10 @@ const { queryBuilder, transformModel } = require('./commons')
 
 const {
     searchCatalog,
-    getMeta
+    getMeta,
+    getStream
 } = handlers({
+    env,
     ...transformModel({ env }),
     ...useCases({
         httpClient: axios,
@@ -22,9 +24,12 @@ const {
     })
 })
 
-builder.defineCatalogHandler(searchCatalog)
-builder.defineMetaHandler(getMeta)
+const addon = builder({ env })
 
-server(builder).serve({
+addon.defineCatalogHandler(searchCatalog)
+addon.defineMetaHandler(getMeta)
+addon.defineStreamHandler(getStream)
+
+server(addon).serve({
     port: 60086
 })

@@ -24,8 +24,8 @@ const Catalog = dependencies => {
 
             const response = await httpClient.get(env.url.search, {
                 params: {
-                    count: skip || 100,
-                    // sorts: 'num_reviews desc,avg_rating desc',
+                    count: (+skip || 0) + 100,
+                    sorts: 'num_reviews desc,avg_rating desc',
                     fields: 'avg_rating,creator,date,description,genre,identifier,language,subject,title,type',
                     q: query
                 }
