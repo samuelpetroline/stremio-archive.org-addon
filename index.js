@@ -6,14 +6,17 @@ const builder = require('./addon')
 const server = require('./server')
 const useCases = require('./use-cases')
 const handlers = require('./handlers')
+const use = require('./pipeline')
 
 const { env } = require('./config')
-const { queryBuilder, transformModel } = require('./commons')
+const { queryBuilder, transformModel, validate } = require('./commons')
+
+const { validateContentType, validateRequest} = validate({ env })
 
 const {
     searchCatalog,
     getMeta,
-    getStream
+    getStreams
 } = handlers({
     env,
     ...transformModel({ env }),
@@ -26,9 +29,9 @@ const {
 
 const addon = builder({ env })
 
-addon.defineCatalogHandler(searchCatalog)
-addon.defineMetaHandler(getMeta)
-addon.defineStreamHandler(getStream)
+addon.defineCatalogHandler(use(validateContentType, searchCatalog))
+addon.defineMetaHandler(use(validateContentType, validateRequest, getMeta))
+addon.defineStreamHandler(use(validateContentType, validateRequest, getStreams))
 
 server(addon).serve({
     port: 60086

@@ -26,12 +26,11 @@ const Catalog = dependencies => {
                 params: {
                     count: (+skip || 0) + 100,
                     sorts: 'num_reviews desc,avg_rating desc',
+                    license: 'publicdomain',
                     fields: 'avg_rating,creator,date,description,genre,identifier,language,subject,title,type',
                     q: query
                 }
             })
-
-            console.log(response)
 
             return response.data.items
         } catch (error) {

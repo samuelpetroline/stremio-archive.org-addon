@@ -25,8 +25,16 @@ module.exports = dependencies => {
         }
     }
 
+    //https://archive.org/download/boys_of_the_city/boys_of_the_city_512kb.mp4
+    const toStream = (item) => {
+        return {
+            url: `${env.url.stream}/${item.id}/${item.name}`,
+        }
+    }
+
     return {
         toCatalog,
-        toMeta
+        toMeta,
+        toStream
     }
 }
