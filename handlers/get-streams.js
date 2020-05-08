@@ -2,11 +2,16 @@ module.exports = dependencies => {
     const {
         getStream,
         toStream,
+        validateRequest,
+        validateContentType,
         env
     } = dependencies
 
     return async (args) => {
-        if (args.type === 'movie' && args.id.indexOf(env.addonContentIdPrefix) !== -1) {
+        try {
+            validateRequest(args)
+            validateContentType(args)
+
             const id = args.id.replace(env.addonContentIdPrefix, '')
             const streams = await getStream({ id })
 
@@ -16,8 +21,9 @@ module.exports = dependencies => {
                     ...stream
                 }))
             }
+        } catch (error) {
+            return Promise.resolve({ streams: [] })
         }
 
-        return Promise.resolve({ streams: [] })
     }
 }

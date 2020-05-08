@@ -8,7 +8,7 @@ module.exports = dependencies => {
 	// Docs: https://github.com/Stremio/stremio-addon-sdk/blob/master/docs/api/responses/manifest.md
 	const manifest = {
 		'id': 'stremio.archive.org.addon',
-		'version': '0.0.1',
+		'version': '1.0.0',
 		'name': 'Archive.org Movies',
 		'description': 'Public domain movies available on Archive.org',
 		'resources': ['catalog', {

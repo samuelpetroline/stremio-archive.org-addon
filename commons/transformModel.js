@@ -1,6 +1,7 @@
 module.exports = dependencies => {
     const {
-        env
+        env,
+        parseTorrent
     } = dependencies
 
     const toCatalog = (item) => {
@@ -25,10 +26,15 @@ module.exports = dependencies => {
         }
     }
 
+    const isTorrent = file => file.indexOf('.torrent') !== -1
+
     //https://archive.org/download/boys_of_the_city/boys_of_the_city_512kb.mp4
-    const toStream = (item) => {
+    const toStream = async (item) => {
+        const url = `${env.url.stream}/${item.id}/${item.name}`
+
         return {
-            url: `${env.url.stream}/${item.id}/${item.name}`,
+            url,
+            infoHash: isTorrent(item.name) ? await parseTorrent(url) : undefined
         }
     }
 

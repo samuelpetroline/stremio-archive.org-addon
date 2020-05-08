@@ -2,11 +2,16 @@ module.exports = dependencies => {
     const {
         getMeta,
         toMeta,
+        validateRequest,
+        validateContentType,
         env
     } = dependencies
 
     return async (args) => {
-        if (args.type === 'movie' && args.id.indexOf(env.addonContentIdPrefix) !== -1) {
+        try {
+            validateRequest(args)
+            validateContentType(args)
+
             const meta = await getMeta({
                 id: args.id.replace(env.addonContentIdPrefix, '')
             })
@@ -14,8 +19,9 @@ module.exports = dependencies => {
             return {
                 meta: toMeta(meta)
             }
+        } catch (error) {
+            return Promise.resolve({ meta: {} })
         }
 
-        return Promise.resolve({ meta: {} })
     }
 }
