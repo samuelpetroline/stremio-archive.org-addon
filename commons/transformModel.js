@@ -27,20 +27,37 @@ module.exports = dependencies => {
     }
 
     const isTorrent = file => file.indexOf('.torrent') !== -1
+    const toUrl = (item) => `${env.url.stream}/${item.id}/${item.name}`
 
-    //https://archive.org/download/boys_of_the_city/boys_of_the_city_512kb.mp4
+    const toSubtitle = (item) => {
+        return {
+            url: toUrl(item),
+            lang: 'eng'
+        }
+    }
+
     const toStream = async (item) => {
-        const url = `${env.url.stream}/${item.id}/${item.name}`
+        const url = toUrl(item)
+        const fileIdx = isTorrent(item.name) ? await parseTorrent(url) : undefined
+
+        if (fileIdx) {
+            return {
+                title: item.format,
+                infoHash: item.btih,
+                fileIdx
+            }
+        }
 
         return {
-            url,
-            infoHash: isTorrent(item.name) ? await parseTorrent(url) : undefined
+            title: item.format,
+            url
         }
     }
 
     return {
         toCatalog,
         toMeta,
-        toStream
+        toStream,
+        toSubtitle
     }
 }

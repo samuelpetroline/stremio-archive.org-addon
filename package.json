@@ -4,7 +4,8 @@
 	"description": "Public domain movies available on Archive.org",
 	"scripts": {
 		"start": "node index.js",
-		"launch": "npm start -- --install"
+		"launch": "npm start -- --install",
+		"debug": "nodemon --inspect index.js"
 	},
 	"dependencies": {
 		"axios": "0.19.2",
@@ -13,6 +14,7 @@
 		"stremio-addon-sdk": "1.1.x"
 	},
 	"devDependencies": {
-		"dotenv": "8.2.0"
+		"dotenv": "8.2.0",
+		"nodemon": "^2.0.3"
 	}
 }

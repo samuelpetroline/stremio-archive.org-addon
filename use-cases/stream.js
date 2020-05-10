@@ -12,17 +12,31 @@ const Stream = dependencies => {
         try {
             const response = await httpClient.get(`${env.url.metadata}/${id}/files`)
 
-            return filterStreams(response.data)
+             return extractStreams({ id, result: response.data.result })
         } catch (error) {
             throw error
         }
     }
 
-    const extensionList = ['.torrent', '.mp4']
     // Returns only streams supported by Stremio
-    const filterStreams = (streams) => {
-        return streams
-            .filter(stream => Boolean(extensionList.filter(ext => stream.name.indexOf(ext) !== -1)))
+    const extractStreams = ({ id, result }) => {
+        const streams = []
+        const subtitles = []
+
+        for (const file of result) {
+            if (Boolean(file.name.match((`${id}(.*)(.mp4|.torrent)`)))) {
+                streams.push(file)
+            }
+
+            if (Boolean(file.name.match((`${id}(.*)(.srt)`)))) {
+                subtitles.push(file)
+            }
+        }
+
+        return {
+            streams,
+            subtitles
+        }
     }
 
     return {

@@ -7,8 +7,8 @@ const server = require('./server')
 const useCases = require('./use-cases')
 const handlers = require('./handlers')
 
-const { env } = require('./config')
 const { queryBuilder, transformModel, validate, parseTorrent } = require('./commons')
+const { env } = require('./config')
 
 const {
     searchCatalog,
@@ -16,7 +16,7 @@ const {
     getStreams
 } = handlers({
     env,
-    ...transformModel({ env, parseTorrent }),
+    ...transformModel({ env, ...parseTorrent() }),
     ...validate({ env }),
     ...useCases({
         httpClient: axios,

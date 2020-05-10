@@ -18,7 +18,6 @@ module.exports = dependencies => {
 		},{
 			name: 'stream',
 			types: ['movie'],
-			idPrefixes: [env.addonContentIdPrefix]
 		}],
 		'types': ['movie'],
 		'catalogs': [{
