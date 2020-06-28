@@ -4,10 +4,12 @@ const {
     SEARCH_URL,
     METADATA_URL,
     IMAGE_URL,
-    STREAM_URL
+    STREAM_URL,
+    PORT
 } = process.env
 
 const config = {
+    port: PORT || 60086,
     addonContentIdPrefix: 'archorg.addon:',
     url: {
         search: SEARCH_URL,

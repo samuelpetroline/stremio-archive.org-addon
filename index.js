@@ -32,5 +32,5 @@ addon.defineMetaHandler(getMeta)
 addon.defineStreamHandler(getStreams)
 
 server(addon).serve({
-    port: 60086
+    port: env.port
 })
