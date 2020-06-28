@@ -11,10 +11,10 @@
 		"axios": "0.19.2",
 		"lucene-query-generator": "0.2.0",
 		"parse-torrent": "7.1.2",
-		"stremio-addon-sdk": "1.1.x"
+		"stremio-addon-sdk": "1.1.x",
+		"dotenv": "8.2.0"
 	},
 	"devDependencies": {
-		"dotenv": "8.2.0",
 		"nodemon": "^2.0.3"
 	}
 }
