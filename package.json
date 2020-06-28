@@ -3,7 +3,8 @@
 	"version": "0.0.1",
 	"description": "Public domain movies available on Archive.org",
 	"scripts": {
-		"start": "npm start -- --install",
+		"start": "node index.js",
+		"launch": "npm start -- --install",
 		"debug": "nodemon --inspect index.js"
 	},
 	"dependencies": {
