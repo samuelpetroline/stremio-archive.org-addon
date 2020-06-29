@@ -1,3 +1,5 @@
+# Available at https://stremio-archive-org-addon.herokuapp.com/
+
 # About
 
 This addon is an effort to broad the access of the massive - and impressive - movies available on Archive.org
