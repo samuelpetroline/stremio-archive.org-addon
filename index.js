@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 const axios = require('axios')
 
@@ -7,22 +7,23 @@ const server = require('./server')
 const useCases = require('./use-cases')
 const handlers = require('./handlers')
 
-const { queryBuilder, transformModel, validate, parseTorrent } = require('./commons')
+const {
+  queryBuilder,
+  transformModel,
+  validate,
+  parseTorrent,
+} = require('./commons')
 const { env } = require('./config')
 
-const {
-    searchCatalog,
-    getMeta,
-    getStreams
-} = handlers({
+const { searchCatalog, getMeta, getStreams } = handlers({
+  env,
+  ...transformModel({ env, ...parseTorrent() }),
+  ...validate({ env }),
+  ...useCases({
+    httpClient: axios,
+    queryBuilder,
     env,
-    ...transformModel({ env, ...parseTorrent() }),
-    ...validate({ env }),
-    ...useCases({
-        httpClient: axios,
-        queryBuilder,
-        env
-    })
+  }),
 })
 
 const addon = builder({ env })
@@ -32,5 +33,5 @@ addon.defineMetaHandler(getMeta)
 addon.defineStreamHandler(getStreams)
 
 server(addon).serve({
-    port: env.port
+  port: env.port,
 })
