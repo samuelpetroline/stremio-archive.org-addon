@@ -8,7 +8,7 @@
 		"debug": "nodemon --inspect index.js"
 	},
 	"dependencies": {
-		"axios": "0.19.2",
+		"axios": "0.21.1",
 		"lucene-query-generator": "0.2.0",
 		"parse-torrent": "7.1.2",
 		"stremio-addon-sdk": "1.1.x",
