@@ -9,7 +9,7 @@ const {
 } = process.env
 
 const config = {
-    port: PORT || 60086,
+    port: PORT || 3000,
     addonContentIdPrefix: 'archorg.addon:',
     url: {
         search: SEARCH_URL,
