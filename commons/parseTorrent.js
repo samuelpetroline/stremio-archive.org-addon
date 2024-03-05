@@ -9,7 +9,7 @@ module.exports = () => {
         if (!torrentInfo.files) return resolve(undefined)
 
         const fileIdx = torrentInfo.files.findIndex((file) =>
-          file.name.includes('.mp4')
+          file.name.includes('.mp4'),
         )
 
         resolve(fileIdx === -1 ? undefined : fileIdx)

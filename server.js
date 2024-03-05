@@ -1,14 +1,13 @@
-const { serveHTTP } = require("stremio-addon-sdk")
+const { serveHTTP } = require('stremio-addon-sdk')
 
-const Server = builder => {
+const Server = (builder) => {
+  const serve = ({ port }) => {
+    serveHTTP(builder.getInterface(), { port })
+  }
 
-    const serve = ({ port }) => {
-        serveHTTP(builder.getInterface(), { port })
-    }
-
-    return {
-        serve
-    }
+  return {
+    serve,
+  }
 }
 
 module.exports = Server

@@ -1,27 +1,17 @@
-const Meta = dependencies => {
-    const {
-        httpClient,
-        env
-    } = dependencies
+const Meta = (dependencies) => {
+  const { httpClient, env } = dependencies
 
-    const getMeta = async (request) => {
-        const {
-            id
-        } = request
+  const getMeta = async (request) => {
+    const { id } = request
 
-        try {
-            const response = await httpClient.get(`${env.url.metadata}/${id}`)
+    const response = await httpClient.get(`${env.url.metadata}/${id}`)
 
-            return response.data.metadata
-        } catch (error) {
-            throw error
-        }
-    }
+    return response.data.metadata
+  }
 
-    return {
-        getMeta
-    }
-
+  return {
+    getMeta,
+  }
 }
 
 module.exports = Meta
