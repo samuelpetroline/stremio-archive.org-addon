@@ -1,16 +1,9 @@
 module.exports = (dependencies) => {
-  const {
-    getStreams,
-    toStream,
-    toSubtitle,
-    validateRequest,
-    validateContentType,
-    env,
-  } = dependencies
+  const { getStreams, toStream, toSubtitle, validateContentType, env } =
+    dependencies
 
   return async (args) => {
     try {
-      validateRequest(args)
       validateContentType(args)
 
       const id = args.id.replace(env.addonContentIdPrefix, '')
@@ -24,8 +17,8 @@ module.exports = (dependencies) => {
               id,
               subtitles: parsedSubtitles,
               ...stream,
-            })
-          )
+            }),
+          ),
         ),
       }
     } catch (error) {
