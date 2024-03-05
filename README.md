@@ -1,4 +1,4 @@
-# Available at https://stremio-archive-org-addon.herokuapp.com/
+# Available at https://stremio-archive-org-addon.fly.dev/
 
 # About
 
