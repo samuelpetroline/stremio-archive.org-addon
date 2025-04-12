@@ -1,6 +1,6 @@
 defmodule StremioArchiveOrgAddon.Actions.SearchCatalog do
-  require StremioArchiveOrgAddon.Decorators.Logger
-  alias StremioArchiveOrgAddon.Decorators.Logger
+  require StremioArchiveOrgAddon.Decorators.LoggerDecorator
+  alias StremioArchiveOrgAddon.Decorators.LoggerDecorator
   alias StremioArchiveOrgAddon.{Constants, Http, QueryBuilder}
 
   defstruct search: nil, genre: nil, skip: nil
@@ -11,9 +11,17 @@ defmodule StremioArchiveOrgAddon.Actions.SearchCatalog do
           skip: non_neg_integer() | nil
         }
 
-  @spec run(t()) :: {:ok, list(map())} | {:error, String.t()}
+  @type catalog_item :: %{
+          id: String.t(),
+          type: String.t(),
+          name: String.t(),
+          description: String.t(),
+          poster: String.t()
+        }
+
+  @spec run(t()) :: {:ok, list(catalog_item())} | {:error, String.t()}
   def run(params) do
-    Logger.log(do_run(params))
+    LoggerDecorator.log(do_run(params))
   end
 
   defp do_run(params) do
@@ -23,7 +31,8 @@ defmodule StremioArchiveOrgAddon.Actions.SearchCatalog do
       |> QueryBuilder.build()
 
     {:ok, data} = do_request(query, params)
-    transform_data(data)
+
+    {:ok, transform_data(data)}
   end
 
   defp build_params(params) do
@@ -76,7 +85,7 @@ defmodule StremioArchiveOrgAddon.Actions.SearchCatalog do
   end
 
   defp transform_data(%{"response" => %{"docs" => items}}) do
-    {:ok, Enum.map(items, &transform_catalog/1)}
+    Enum.map(items, &transform_catalog/1)
   end
 
   defp transform_catalog(doc) do
@@ -85,7 +94,7 @@ defmodule StremioArchiveOrgAddon.Actions.SearchCatalog do
       type: "movie",
       name: doc["title"],
       description: doc["description"],
-      poster: "#{Constants.image_url()}/#{doc["identifier"]}"
+      poster: Constants.image_url() <> "/" <> doc["identifier"]
     }
   end
 end

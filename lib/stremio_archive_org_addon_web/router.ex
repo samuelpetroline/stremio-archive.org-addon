@@ -8,10 +8,10 @@ defmodule StremioArchiveOrgAddonWeb.Router do
   scope "/", StremioArchiveOrgAddonWeb.Controllers do
     pipe_through :api
 
-    get "/manifest.json", ManifestController, :index
+    get "/manifest.json", ManifestController, :get
     get "/catalog/:type/:id", CatalogController, :search
     get "/catalog/:type/:id/:params", CatalogController, :search
-    get "/meta/:type/:id", MetaController, :index
-    get "/stream/:type/:id", StreamsController, :index
+    get "/meta/:type/:id", MetaController, :get
+    get "/stream/:type/:id", StreamsController, :get
   end
 end

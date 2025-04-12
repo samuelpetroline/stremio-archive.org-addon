@@ -1,13 +1,14 @@
 defmodule StremioArchiveOrgAddonWeb.Controllers.CatalogController do
   require Logger
-  require StremioArchiveOrgAddon.Decorators.Logger
-  alias StremioArchiveOrgAddon.Decorators.Logger, as: LoggerDecorator
+  require StremioArchiveOrgAddon.Decorators.LoggerDecorator
+  alias StremioArchiveOrgAddon.Decorators.LoggerDecorator
+
   use StremioArchiveOrgAddonWeb, :controller
 
   alias StremioArchiveOrgAddon.Actions.SearchCatalog
 
-  plug StremioArchiveOrgAddon.Plugs.ParamsParser
   plug StremioArchiveOrgAddon.Guards.ValidateContentType, "movie"
+  plug StremioArchiveOrgAddon.Plugs.ParamsParser
 
   def search(conn, params) do
     LoggerDecorator.log(do_search(conn, params))

@@ -10,4 +10,6 @@ defmodule StremioArchiveOrgAddon.Constants do
   def image_url, do: "https://archive.org/services/img"
 
   def stream_url, do: "https://archive.org/services/stream"
+
+  def meta_url, do: "https://archive.org/metadata"
 end

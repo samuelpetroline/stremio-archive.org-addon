@@ -1,20 +1,7 @@
 defmodule StremioArchiveOrgAddonWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :stremio_archive_org_addon
 
-  # The session will be stored in the cookie and signed,
-  # this means its contents can be read but not tampered with.
-  # Set :encryption_salt if you would also like to encrypt it.
-  @session_options [
-    store: :cookie,
-    key: "_stremio_archive_org_addon_key",
-    signing_salt: "MygeXA9Q",
-    same_site: "Lax"
-  ]
-
   # Serve at "/" the static files from "priv/static" directory.
-  #
-  # You should set gzip to true if you are running phx.digest
-  # when deploying your static files in production.
   plug Plug.Static,
     at: "/",
     from: :stremio_archive_org_addon,
@@ -30,6 +17,8 @@ defmodule StremioArchiveOrgAddonWeb.Endpoint do
   plug Plug.RequestId
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
+  plug :put_default_content_type
+
   plug Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
@@ -37,7 +26,6 @@ defmodule StremioArchiveOrgAddonWeb.Endpoint do
 
   plug Plug.MethodOverride
   plug Plug.Head
-  plug Plug.Session, @session_options
 
   # Add CORS plug to allow all origins
   plug Corsica,
@@ -46,4 +34,9 @@ defmodule StremioArchiveOrgAddonWeb.Endpoint do
     allow_methods: :all
 
   plug StremioArchiveOrgAddonWeb.Router
+
+  # Add function to set default content type
+  defp put_default_content_type(conn, _) do
+    Plug.Conn.put_resp_content_type(conn, "application/json")
+  end
 end

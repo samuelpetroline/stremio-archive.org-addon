@@ -1,4 +1,4 @@
-defmodule StremioArchiveOrgAddon.Decorators.Logger do
+defmodule StremioArchiveOrgAddon.Decorators.LoggerDecorator do
   defmacro log(call) do
     quote do
       require Logger

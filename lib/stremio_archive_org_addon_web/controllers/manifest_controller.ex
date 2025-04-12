@@ -1,15 +1,15 @@
 defmodule StremioArchiveOrgAddonWeb.Controllers.ManifestController do
-  require StremioArchiveOrgAddon.Decorators.Logger
-  alias StremioArchiveOrgAddon.Decorators.Logger
+  require StremioArchiveOrgAddon.Decorators.LoggerDecorator
+  alias StremioArchiveOrgAddon.Decorators.LoggerDecorator
   use StremioArchiveOrgAddonWeb, :controller
 
   alias StremioArchiveOrgAddon.Constants
 
-  def index(conn, _params) do
-    Logger.log(do_index(conn))
+  def get(conn, _params) do
+    LoggerDecorator.log(do_get(conn))
   end
 
-  defp do_index(conn) do
+  defp do_get(conn) do
     json(conn, %{
       id: "stremio.archive.org.addon",
       version: "2.0.0",

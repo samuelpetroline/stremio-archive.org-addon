@@ -1,9 +1,9 @@
 defmodule StremioArchiveOrgAddon.Http do
-  require StremioArchiveOrgAddon.Decorators.Logger
-  alias StremioArchiveOrgAddon.Decorators.Logger
+  require StremioArchiveOrgAddon.Decorators.LoggerDecorator
+  alias StremioArchiveOrgAddon.Decorators.LoggerDecorator
 
-  def get(url, options, headers \\ []) do
-    Logger.log(do_get(url, options, headers))
+  def get(url, options \\ [], headers \\ []) do
+    LoggerDecorator.log(do_get(url, options, headers))
   end
 
   defp do_get(url, options, headers) do
