@@ -1,0 +1,38 @@
+name: Deploy to Beamup
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: '1.14.5'
+          otp-version: '25.3'
+
+      - name: Install dependencies
+        run: |
+          mix local.hex --force
+          mix local.rebar --force
+          mix deps.get
+
+      - name: Build release
+        run: mix release
+        env:
+          MIX_ENV: prod
+
+      - name: Install Beamup CLI
+        run: |
+          curl -fsSL https://beamup.io/install.sh | sh
+
+      - name: Deploy to Beamup
+        run: beamup deploy
+        env:
+          BEAMUP_TOKEN: ${{ secrets.BEAMUP_TOKEN }} 
