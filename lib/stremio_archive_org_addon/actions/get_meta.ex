@@ -1,5 +1,7 @@
 defmodule StremioArchiveOrgAddon.Actions.GetMeta do
+  require Logger
   require StremioArchiveOrgAddon.Decorators.LoggerDecorator
+
   alias StremioArchiveOrgAddon.Decorators.LoggerDecorator
   alias StremioArchiveOrgAddon.{Constants, Http}
 
@@ -31,30 +33,37 @@ defmodule StremioArchiveOrgAddon.Actions.GetMeta do
   end
 
   defp request(%{id: id}) do
-    Http.get(Constants.meta_url() <> "/" <> id)
+    Http.get(
+      (Constants.meta_url() <> "/" <> String.replace(id, Constants.addon_content_id_prefix(), ""))
+      |> String.replace(".json", "")
+    )
   end
 
-  defp transform_data(%{"response" => %{"docs" => items}}) do
-    Enum.map(items, &transform_meta/1)
+  defp transform_data({:ok, %{"metadata" => metadata}}) do
+    {:ok, transform_meta(metadata)}
+  end
+
+  defp transform_data(_) do
+    {:error, "Unable to get meta"}
   end
 
   defp transform_meta(doc) do
     %{
-      id: doc["identifier"],
+      id: Constants.addon_content_id_prefix() <> doc["identifier"],
       type: "movie",
       name: doc["title"],
       description: doc["description"],
       language: doc["language"],
-      genres: split_string(doc["genre"]),
-      director: split_string(doc["director"])
+      genres: split_string(doc["subject"], ";"),
+      director: split_string(doc["director"], ",")
     }
   end
 
-  defp split_string(string) when is_binary(string) do
+  defp split_string(string, delimiter) when is_binary(string) do
     string
-    |> String.split(",")
+    |> String.split(delimiter)
     |> Enum.map(&String.trim/1)
   end
 
-  defp split_string(nil), do: nil
+  defp split_string(_, _), do: nil
 end

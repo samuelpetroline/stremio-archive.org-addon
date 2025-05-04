@@ -39,22 +39,11 @@ defmodule StremioArchiveOrgAddon.Actions.SearchCatalog do
     search = Map.get(params, :search, nil)
     genre = Map.get(params, :genre, nil)
 
-    case is_nil(search) do
-      true ->
-        %{
-          # collection: "feature_films",
-          mediatype: "movies",
-          subject: genre
-        }
-
-      false ->
-        %{
-          # collection: "feature_films",
-          mediatype: "movies",
-          search: "#{search}*",
-          subject: genre
-        }
-    end
+    %{
+      mediatype: "movies",
+      title: search,
+      subject: genre
+    }
   end
 
   defp do_request(query, params) do

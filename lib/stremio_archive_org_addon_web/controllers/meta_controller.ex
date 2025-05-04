@@ -7,9 +7,9 @@ defmodule StremioArchiveOrgAddonWeb.Controllers.MetaController do
 
   alias StremioArchiveOrgAddon.Actions.GetMeta
 
+  plug StremioArchiveOrgAddon.Guards.ValidateContentType, "movie"
   plug StremioArchiveOrgAddon.Guards.ValidateId
   plug StremioArchiveOrgAddon.Plugs.ParamsParser
-  plug StremioArchiveOrgAddon.Guards.ValidateContentType, "movie"
 
   def get(conn, params) do
     LoggerDecorator.log(do_get(conn, params))
@@ -22,15 +22,19 @@ defmodule StremioArchiveOrgAddonWeb.Controllers.MetaController do
     rescue
       e ->
         Logger.error("Error in meta get: #{inspect(e)}")
-        json(conn, [])
+
+        conn
+        |> json(%{meta: nil})
     end
   end
 
   defp response({:ok, data}, conn) do
-    json(conn, data)
+    conn
+    |> json(%{meta: data})
   end
 
   defp response({:error, _error}, conn) do
-    json(conn, [])
+    conn
+    |> json(%{meta: nil})
   end
 end

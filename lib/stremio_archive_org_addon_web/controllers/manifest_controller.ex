@@ -10,8 +10,11 @@ defmodule StremioArchiveOrgAddonWeb.Controllers.ManifestController do
   end
 
   defp do_get(conn) do
-    json(conn, %{
-      id: "stremio.archive.org.addon",
+    conn
+    |> put_resp_header("content-type", "application/json")
+    |> put_resp_header("cache-control", "max-age=86400")
+    |> json(%{
+      id: "org.archive.stremio",
       version: "2.0.0",
       name: "Archive.org Movies",
       description: "Public domain movies available on Archive.org",
@@ -24,7 +27,8 @@ defmodule StremioArchiveOrgAddonWeb.Controllers.ManifestController do
         },
         %{
           name: "stream",
-          types: ["movie"]
+          types: ["movie"],
+          idPrefixes: [Constants.addon_content_id_prefix()]
         }
       ],
       types: ["movie"],

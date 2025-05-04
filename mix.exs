@@ -38,7 +38,7 @@ defmodule StremioArchiveOrgAddon.MixProject do
       {:gettext, "~> 0.20"},
       {:corsica, "~> 2.1"},
       {:httpoison, "~> 2.0"},
-      {:bento, "~> 0.9.2"},
+      {:bento, "~> 1.0.0"},
       {:dialyxir, "~> 1.4", only: [:dev], runtime: false}
     ]
   end

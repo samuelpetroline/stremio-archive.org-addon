@@ -21,15 +21,23 @@ defmodule StremioArchiveOrgAddonWeb.Controllers.CatalogController do
     rescue
       e ->
         Logger.error("Error in catalog search: #{inspect(e)}")
-        json(conn, [])
+
+        conn
+        |> put_resp_header("content-type", "application/json")
+        |> json(%{metas: []})
     end
   end
 
   defp response({:ok, data}, conn) do
-    json(conn, data)
+    conn
+    |> put_resp_header("content-type", "application/json")
+    |> put_resp_header("cache-control", "max-age=3600")
+    |> json(%{metas: data})
   end
 
   defp response({:error, _error}, conn) do
-    json(conn, [])
+    conn
+    |> put_resp_header("content-type", "application/json")
+    |> json(%{metas: []})
   end
 end

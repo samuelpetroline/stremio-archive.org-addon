@@ -1,4 +1,6 @@
 defmodule StremioArchiveOrgAddon.Plugs.ParamsParser do
+  alias StremioArchiveOrgAddon.Constants
+
   @moduledoc """
   A plug that automatically parses route parameters into a map.
   Handles conversion of string parameters into a structured map format.
@@ -13,7 +15,7 @@ defmodule StremioArchiveOrgAddon.Plugs.ParamsParser do
 
   defp transform_params(params) do
     Map.merge(params, build_map(params["params"]))
-    |> Map.new(fn {key, value} -> {String.to_atom(key), value} end)
+    |> Map.new(fn {key, value} -> {String.to_atom(key), cleanup_value(value)} end)
   end
 
   # Converts from string to map
@@ -28,4 +30,9 @@ defmodule StremioArchiveOrgAddon.Plugs.ParamsParser do
   end
 
   defp build_map(_), do: %{}
+
+  defp cleanup_value(value) do
+    String.replace(value, ".json", "")
+    |> String.replace(Constants.addon_content_id_prefix(), "")
+  end
 end

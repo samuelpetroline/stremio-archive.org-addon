@@ -6,9 +6,9 @@ defmodule StremioArchiveOrgAddonWeb.Controllers.StreamsController do
 
   alias StremioArchiveOrgAddon.Actions.GetStreams
 
+  plug StremioArchiveOrgAddon.Guards.ValidateContentType, "movie"
   plug StremioArchiveOrgAddon.Guards.ValidateId
   plug StremioArchiveOrgAddon.Plugs.ParamsParser
-  plug StremioArchiveOrgAddon.Guards.ValidateContentType, "movie"
 
   def get(conn, params) do
     LoggerDecorator.log(do_get(conn, params))
@@ -20,12 +20,16 @@ defmodule StremioArchiveOrgAddonWeb.Controllers.StreamsController do
       |> response(conn)
     rescue
       e ->
-        Logger.error("Error in catalog search: #{inspect(e)}")
-        json(conn, [])
+        Logger.error("Error in streams get: #{inspect(e)}")
+        json(conn, %{streams: []})
     end
   end
 
   defp response({:ok, data}, conn) do
     json(conn, data)
+  end
+
+  defp response({:error, _error}, conn) do
+    json(conn, %{streams: []})
   end
 end

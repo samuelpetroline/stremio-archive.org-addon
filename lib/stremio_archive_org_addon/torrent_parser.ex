@@ -5,6 +5,8 @@ defmodule StremioArchiveOrgAddon.TorrentParser do
   """
 
   require Logger
+  require StremioArchiveOrgAddon.Decorators.LoggerDecorator
+  alias StremioArchiveOrgAddon.Decorators.LoggerDecorator
 
   # Common video file extensions
   @video_extensions [".mp4", ".mkv", ".avi", ".mov", ".wmv", ".flv", ".webm"]
@@ -18,6 +20,10 @@ defmodule StremioArchiveOrgAddon.TorrentParser do
   """
   @spec parse_torrent(String.t()) :: {:ok, non_neg_integer()} | {:error, String.t()}
   def parse_torrent(url) do
+    LoggerDecorator.log(do_parse(url))
+  end
+
+  defp do_parse(url) do
     Logger.debug("Parsing torrent from URL: #{url}")
 
     with {:ok, body} <- download_torrent(url),
@@ -32,7 +38,7 @@ defmodule StremioArchiveOrgAddon.TorrentParser do
   end
 
   defp download_torrent(url) do
-    case HTTPoison.get(url) do
+    case HTTPoison.get(url, [], follow_redirect: true) do
       {:ok, %{status_code: 200, body: body}} ->
         {:ok, body}
 
@@ -56,7 +62,7 @@ defmodule StremioArchiveOrgAddon.TorrentParser do
     cond do
       # Single file torrent
       Map.has_key?(info, "name") and Map.has_key?(info, "length") ->
-        handle_single_file(info)
+        handle_single_file(info, has_video_extension?(info["name"]))
 
       # Multi-file torrent
       Map.has_key?(info, "files") ->
@@ -67,13 +73,10 @@ defmodule StremioArchiveOrgAddon.TorrentParser do
     end
   end
 
-  defp handle_single_file(%{"name" => name}) do
-    if has_video_extension?(name) do
-      {:ok, 0}
-    else
-      {:error, "Single file torrent does not contain a video file"}
-    end
-  end
+  defp handle_single_file(%{"name" => _name}, true), do: {:ok, 0}
+
+  defp handle_single_file(%{"name" => _name}, false),
+    do: {:error, "Single file torrent does not contain a video file"}
 
   defp handle_multiple_files(%{"files" => files}) do
     index =
@@ -97,5 +100,6 @@ defmodule StremioArchiveOrgAddon.TorrentParser do
   defp has_video_extension?(filename) when is_binary(filename) do
     Enum.any?(@video_extensions, &String.ends_with?(String.downcase(filename), &1))
   end
+
   defp has_video_extension?(_), do: false
 end

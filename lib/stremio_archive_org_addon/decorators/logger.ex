@@ -7,16 +7,22 @@ defmodule StremioArchiveOrgAddon.Decorators.LoggerDecorator do
 
       Logger.debug("""
       ➡️  Entering #{__MODULE__}.#{name}
+      """)
+
+      Logger.info("""
       Parameters:
-        #{inspect(args, pretty: true, width: 80)}
+        #{inspect(args)}
       """)
 
       result = unquote(call)
 
-      Logger.info("""
+      Logger.debug("""
       ⬅️  Exiting #{__MODULE__}.#{name}
+      """)
+
+      Logger.info("""
       Result:
-        #{inspect(result, pretty: true, width: 80)}
+        #{inspect(result)}
       """)
 
       result

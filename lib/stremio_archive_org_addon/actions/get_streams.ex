@@ -1,5 +1,7 @@
 defmodule StremioArchiveOrgAddon.Actions.GetStreams do
+  require Logger
   require StremioArchiveOrgAddon.Decorators.LoggerDecorator
+
   alias StremioArchiveOrgAddon.Decorators.LoggerDecorator
   alias StremioArchiveOrgAddon.{Constants, Http, TorrentParser}
 
@@ -28,35 +30,48 @@ defmodule StremioArchiveOrgAddon.Actions.GetStreams do
     LoggerDecorator.log(do_run(params))
   end
 
-  defp do_run(params) do
-    params
+  defp do_run(%{id: id} = _params) do
+    id
     |> request()
-    |> transform_data()
+    |> transform_data(id)
   end
 
-  defp request(%{id: id}) do
+  defp request(id) do
     Http.get(Constants.meta_url() <> "/" <> id <> "/files")
   end
 
-  defp transform_data(%{"response" => %{"docs" => items}}) do
-    streams = extract_streams(items)
-    subtitles = extract_subtitles(items)
+  defp transform_data({:ok, %{"files" => files}}, id) do
+    streams = extract_streams(files, id)
+    subtitles = extract_subtitles(files, id)
 
     {:ok, %{streams: streams, subtitles: subtitles}}
   end
 
-  defp extract_streams(items) do
+  defp transform_data({:ok, %{"result" => result}}, id) do
+    streams = extract_streams(result, id)
+    subtitles = extract_subtitles(result, id)
+
+    {:ok, %{streams: streams, subtitles: subtitles}}
+  end
+
+  defp transform_data(_, _) do
+    {:error, "Unable to get streams"}
+  end
+
+  defp extract_streams(items, id) do
     items
     |> Enum.filter(&is_stream_file?/1)
-    |> Enum.map(&transform_to_stream_item/1)
+    |> Enum.map(&transform_to_stream_item(id, &1))
+    |> Enum.filter(& &1)
     |> Task.async_stream(&transform_to_stream_response/1)
     |> Enum.map(fn {:ok, result} -> result end)
   end
 
-  defp extract_subtitles(items) do
+  defp extract_subtitles(items, id) do
     items
     |> Enum.filter(&is_subtitle_file?/1)
-    |> Enum.map(&transform_to_stream_item/1)
+    |> Enum.map(&transform_to_stream_item(id, &1))
+    |> Enum.filter(& &1)
   end
 
   defp is_stream_file?(%{"name" => name}) do
@@ -67,7 +82,7 @@ defmodule StremioArchiveOrgAddon.Actions.GetStreams do
     String.match?(name, ~r/.*(.srt)$/)
   end
 
-  defp transform_to_stream_item(%{"identifier" => id, "name" => name, "btih" => btih}) do
+  defp transform_to_stream_item(id, %{"name" => name, "btih" => btih}) do
     %{
       id: id,
       name: name,
@@ -76,7 +91,7 @@ defmodule StremioArchiveOrgAddon.Actions.GetStreams do
     }
   end
 
-  defp transform_to_stream_item(%{"identifier" => id, "name" => name}) do
+  defp transform_to_stream_item(id, %{"name" => name}) do
     %{
       id: id,
       name: name,
@@ -85,11 +100,13 @@ defmodule StremioArchiveOrgAddon.Actions.GetStreams do
     }
   end
 
+  defp transform_to_stream_item(_, _), do: nil
+
   defp build_stream_url(id, name) do
-    Constants.stream_url() <> "/" <> id <> "/" <> name
+    Constants.download_url() <> "/" <> id <> "/" <> name
   end
 
-  defp transform_to_stream_response(%{name: name, url: url, btih: btih} = item) do
+  defp transform_to_stream_response(%{name: name, url: url, btih: btih} = _item) do
     if is_torrent?(name) do
       case TorrentParser.parse_torrent(url) do
         {:ok, file_idx} ->
@@ -98,6 +115,7 @@ defmodule StremioArchiveOrgAddon.Actions.GetStreams do
             infoHash: btih,
             fileIdx: file_idx
           }
+
         {:error, _} ->
           %{
             title: name,

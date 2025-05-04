@@ -3,6 +3,7 @@ defmodule StremioArchiveOrgAddonWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug StremioArchiveOrgAddon.Plugs.ResponseHeaders
   end
 
   scope "/", StremioArchiveOrgAddonWeb.Controllers do

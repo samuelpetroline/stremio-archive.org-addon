@@ -17,8 +17,6 @@ defmodule StremioArchiveOrgAddonWeb.Endpoint do
   plug Plug.RequestId
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
-  plug :put_default_content_type
-
   plug Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
@@ -27,16 +25,16 @@ defmodule StremioArchiveOrgAddonWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
 
-  # Add CORS plug to allow all origins
+  # Add CORS plug to allow all origins with specific headers for Stremio
   plug Corsica,
     origins: "*",
-    allow_headers: :all,
-    allow_methods: :all
+    allow_headers: ["accept", "content-type", "origin"],
+    allow_methods: ["GET", "HEAD", "OPTIONS"],
+    expose_headers: ["content-type"],
+    max_age: 86400
+
+  # Remove the default content type plug since we'll handle content types
+  # in the specific controller actions
 
   plug StremioArchiveOrgAddonWeb.Router
-
-  # Add function to set default content type
-  defp put_default_content_type(conn, _) do
-    Plug.Conn.put_resp_content_type(conn, "application/json")
-  end
 end

@@ -19,7 +19,7 @@ defmodule StremioArchiveOrgAddon.QueryBuilder do
   def build(args) when is_map(args) do
     args
     |> Enum.reject(fn {_key, value} -> is_nil(value) end)
-    |> Enum.map(fn {key, value} -> "#{key}:#{escape_value(value)}" end)
+    |> Enum.map(fn {key, value} -> ~s(#{key}:"#{escape_value(value)}") end)
     |> Enum.join(" AND ")
   end
 

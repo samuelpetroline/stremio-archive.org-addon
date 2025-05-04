@@ -1,4 +1,5 @@
 defmodule StremioArchiveOrgAddon.Http do
+  require Logger
   require StremioArchiveOrgAddon.Decorators.LoggerDecorator
   alias StremioArchiveOrgAddon.Decorators.LoggerDecorator
 
@@ -9,6 +10,8 @@ defmodule StremioArchiveOrgAddon.Http do
   defp do_get(url, options, headers) do
     query_params = Keyword.get(options, :params, %{})
     url_with_params = build_url_with_params(url, query_params)
+
+    Logger.info("url_with_params: #{inspect(url_with_params)}")
 
     url_with_params
     |> HTTPoison.get(headers, Keyword.delete(options, :params))
@@ -39,8 +42,8 @@ defmodule StremioArchiveOrgAddon.Http do
   defp handle_response({:ok, %HTTPoison.Response{status_code: 200, body: body}}),
     do: {:ok, Jason.decode!(body)}
 
-  defp handle_response({:ok, %HTTPoison.Response{status_code: status}}),
-    do: {:error, "HTTP #{status}"}
+  defp handle_response({:ok, %HTTPoison.Response{status_code: status, body: body}}),
+    do: {:error, "HTTP #{status}: #{body}"}
 
   defp handle_response({:error, %HTTPoison.Error{reason: reason}}), do: {:error, reason}
 end
