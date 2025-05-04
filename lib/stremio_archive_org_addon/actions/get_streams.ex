@@ -64,6 +64,7 @@ defmodule StremioArchiveOrgAddon.Actions.GetStreams do
     |> Enum.map(&transform_to_stream_item(id, &1))
     |> Enum.filter(& &1)
     |> Task.async_stream(&transform_to_stream_response/1)
+    |> Enum.filter(& &1)
     |> Enum.map(fn {:ok, result} -> result end)
   end
 
@@ -117,10 +118,7 @@ defmodule StremioArchiveOrgAddon.Actions.GetStreams do
           }
 
         {:error, _} ->
-          %{
-            title: name,
-            url: url
-          }
+          nil
       end
     else
       %{
